@@ -102,6 +102,12 @@ user, err := parseUserRequest(rawData)
 Expect(user).To(Equal(User{Name: "田中"}))
 ```
 
+## ファイル生成の禁止ルール
+
+- `go build` で生成したバイナリはリポジトリに残さない。確認後に削除する
+- テストで一時ファイルを作らない（`t.TempDir()`・`os.WriteFile` 禁止）。`io.Reader` を使ってメモリ上でテストする
+- `go build` / `go test` 実行時は `GOPATH`・`GOCACHE` にシステムデフォルトを使用する。プロジェクトディレクトリ内にキャッシュディレクトリ（`.gocache/`・`.gomodcache/` 等）を作らない
+
 ## コミット規則
 
 - 意味のある単位でコミットする（機能単位、ドメイン単位など）
