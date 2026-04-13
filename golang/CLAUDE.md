@@ -51,12 +51,47 @@ go generate ./...
 ginkgo ./...
 ```
 
+## テストの対象外
+
+- 標準ライブラリや外部ライブラリの動作をテストしない。自分たちのコードが正しく動くかを検証するのがテストの目的であり、ライブラリの正しさはライブラリ側の責務
+
+```go
+// 悪い例: json.Marshal が正しくエンコードするかをテストしている（標準ライブラリの動作検証）
+data, _ := json.Marshal(User{Name: "田中"})
+Expect(string(data)).To(ContainSubstring(`"name":"田中"`))
+
+// 良い例: 自分たちのコード（JSONレスポンス生成など）の出力をテストする
+body := buildResponseBody(User{Name: "田中"})
+Expect(body.Name).To(Equal("田中"))
+```
+
 ## テストのアサート規則
 
 - 正常系のアサートは構造体のフィールドを1つずつ `Equal` で確認する。構造体全体の一括比較は使わない
 - エラー系では第1戻り値も `_` で無視せず、ゼロ値であることを明示的にアサートする
 - モック入力と期待値の構造体はフィールドを対称に揃える（片方だけ省略しない）
 - モック期待値のみで振る舞いを暗黙検証しているだけのテストケースは書かない
+
+```go
+// 悪い例（正常系）: 構造体全体を一括比較する
+Expect(result).To(Equal(User{Name: "田中", Email: "tanaka@example.com", Age: 30}))
+
+// 良い例（正常系）: フィールドを1つずつ確認する
+Expect(result.Name).To(Equal("田中"))
+Expect(result.Email).To(Equal("tanaka@example.com"))
+Expect(result.Age).To(Equal(30))
+```
+
+```go
+// 悪い例（エラー系）: 第1戻り値を _ で無視する
+_, err := createUser(input)
+Expect(err).To(HaveOccurred())
+
+// 良い例（エラー系）: 第1戻り値もゼロ値であることをアサートする
+user, err := createUser(input)
+Expect(user).To(BeNil())
+Expect(err).To(HaveOccurred())
+```
 
 ## テストコードの実装禁止ルール
 
