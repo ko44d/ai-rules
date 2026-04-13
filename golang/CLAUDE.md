@@ -30,7 +30,13 @@ go fmt ./...        # フォーマット差分なし
 
 ## テストフレームワーク
 
-テストフレームワークは **Ginkgo v2 + Gomega** を使用する（BDDスタイル）。実装前にテストを書く。
+テストフレームワークは **Ginkgo v2 + Gomega** を使用する（BDDスタイル）。
+実装は以下の順で進める。
+
+1. 処理の流れを言語化する
+2. インターフェース・型・関数シグネチャを決める
+3. 機能・フィールド・振る舞いの単位でSpecを先に書く（実装がないため失敗する状態から始める）
+4. Specが通るように実装・リファクタリングする
 
 モックは **go.uber.org/mock（mockgen）** で生成する。手書きmockは使わない。
 
@@ -47,7 +53,7 @@ ginkgo ./...
 
 ## テストのアサート規則
 
-- 正常系のアサートは構造体全体を `Equal` で比較する。部分フィールドの確認は禁止
+- 正常系のアサートは構造体のフィールドを1つずつ `Equal` で確認する。構造体全体の一括比較は使わない
 - エラー系では第1戻り値も `_` で無視せず、ゼロ値であることを明示的にアサートする
 - モック入力と期待値の構造体はフィールドを対称に揃える（片方だけ省略しない）
 - モック期待値のみで振る舞いを暗黙検証しているだけのテストケースは書かない
@@ -69,8 +75,10 @@ for _, field := range []string{"Name", "Email", "Age"} {
     Expect(result).To(ContainSubstring(field))
 }
 
-// 良い例1: 構造体全体をEqualで比較する
-Expect(result).To(Equal(User{Name: "田中", Email: "tanaka@example.com", Age: 30}))
+// 良い例1: フィールドを1つずつ確認する
+Expect(result.Name).To(Equal("田中"))
+Expect(result.Email).To(Equal("tanaka@example.com"))
+Expect(result.Age).To(Equal(30))
 ```
 
 ```go
