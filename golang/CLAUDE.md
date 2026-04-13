@@ -16,7 +16,7 @@
 
 ```bash
 go build ./...      # ビルド成功
-go test ./...       # 全テスト合格
+ginkgo ./...        # 全Spec合格
 go fmt ./...        # フォーマット差分なし
 ```
 
