@@ -20,58 +20,6 @@ ginkgo ./...        # 全Spec合格
 go fmt ./...        # フォーマット差分なし
 ```
 
-## ディレクトリ構造
-
-[golang-standards/project-layout](https://github.com/golang-standards/project-layout/blob/master/README_ja.md) に従う。
-
-### 使用するディレクトリ
-
-**cmd/**
-- サブディレクトリ名は生成するバイナリ名と一致させる
-  - 例：`cmd/myapp/` → `go build ./cmd/myapp` で `myapp` が生成される
-- `main.go` はエントリーポイントのみとし、ロジックは internal/ に置く
-
-**internal/**
-- プロジェクト固有の非公開コードを置く
-- 外部プロジェクトからインポートされることを想定しないコードはすべてここに置く
-
-**docs/**
-- 設計ドキュメント・仕様書を置く
-- godoc で生成できる内容は置かない
-
-**deployments/**
-- docker-compose.yml・Dockerfile などのインフラ構成ファイルを置く
-- Kubernetes・Terraform を使う場合もここに集約する
-
-**scripts/**
-- ビルド・セットアップ・解析などの補助スクリプトを置く
-- Makefile をシンプルに保つためにスクリプトをここに切り出す
-
-**build/**
-- CI 設定（GitHub Actions など）を `build/ci/` に置く
-- パッケージング設定（Dockerfile のビルド定義など）を `build/package/` に置く
-
-### 必要になったら使うディレクトリ
-
-**api/**
-- OpenAPI / Swagger 仕様・JSON Schema・Protocol Buffers 定義を置く
-- 外部サービスとの API 仕様を管理する場合に使う
-
-**configs/**
-- 設定ファイルのテンプレート・デフォルト値を置く
-- 環境変数だけで管理できている間は不要
-
-### 使わないディレクトリ
-
-**pkg/**
-- 外部プロジェクトが再利用するライブラリを置く想定だが、このプロジェクトは外部公開ライブラリを持たないため不要
-
-**vendor/**
-- Go Modules で管理するため不要
-
-**src/**
-- Go プロジェクトでは使わない（Java 由来のパターンであり $GOPATH/src と混同される）
-
 ## コーディングスタイル
 
 [Effective Go](https://go.dev/doc/effective_go) に従う。主なルール：
