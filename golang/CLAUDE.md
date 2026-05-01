@@ -78,6 +78,18 @@ go generate ./...
 ginkgo ./...
 ```
 
+`//go:generate` ディレクティブは `package` 宣言より上に配置する。
+
+```go
+//go:generate mockgen -source=foo.go -destination=mocks/mock_foo.go -package=mocks
+
+package foo
+
+import (
+    ...
+)
+```
+
 ## テストの対象外
 
 - 標準ライブラリや外部ライブラリの動作をテストしない。自分たちのコードが正しく動くかを検証するのがテストの目的であり、ライブラリの正しさはライブラリ側の責務
