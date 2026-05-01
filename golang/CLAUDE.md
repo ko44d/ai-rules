@@ -31,6 +31,22 @@ go fmt ./...        # フォーマット差分なし
 - エラーは `fmt.Errorf("context: %w", err)` でラップする。失敗箇所を常に追跡可能にするため
 - インターフェースは実装パッケージではなく、利用パッケージ側に置く
 - パッケージ名は小文字・単語1つ・短くする（アンダースコアやキャメルケースは使わない）
+- インポートエイリアスはパッケージ名が衝突する場合のみ付ける。衝突がない場合はエイリアスを付けない
+
+衝突時のエイリアス命名規則：
+
+```go
+// 悪い例: 衝突がないのにエイリアスを付けている
+h "github.com/example/internal/infrastructure/hrmos"
+
+// 自プロジェクト内のパッケージが衝突する場合 → {コンテキスト}{パッケージ名} の形にする
+// internal/infrastructure/hrmos と internal/interface/hrmos が衝突する例
+hrmosinfrastructure "github.com/example/internal/infrastructure/hrmos"
+"github.com/example/internal/interface/hrmos" // hrmos（エイリアス不要な側はそのまま）
+
+// 外部ライブラリのパッケージが衝突する場合 → go{パッケージ名} の形にする
+gosdkmcp "github.com/modelcontextprotocol/go-sdk/mcp"
+```
 
 ## コメント規則
 
